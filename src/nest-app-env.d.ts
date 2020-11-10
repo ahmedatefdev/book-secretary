@@ -4,10 +4,8 @@ declare namespace NodeJS {
     NODE_ENV: 'development' | 'production' | 'test';
     EXPIRE_IN: string;
     JWT_SECRET: string;
-    DB_TYPE: string;
-    USE_NEW_URL_PARSER: string;
-    TYPEORM_SYNC: string;
-    LOGGING: string;
+    SENDGRID_API_EMAIL: string;
+    JWT_SECRET_RESET: string;
   }
 }
 

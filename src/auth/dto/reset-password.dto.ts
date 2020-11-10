@@ -3,22 +3,11 @@ import {
   MinLength,
   MaxLength,
   Matches,
-  IsEmail,
 } from 'class-validator';
 
-export class AuthSignupCredentialsDto {
+export class ResetPasswordDto {
   @IsString()
-  @MinLength(3)
-  @MaxLength(255)
-  firstName: string;
-
-  @IsString()
-  @MinLength(3)
-  @MaxLength(255)
-  lastName: string;
-
-  @IsEmail()
-  email: string;
+  token: string;
 
   @IsString()
   @MinLength(8)

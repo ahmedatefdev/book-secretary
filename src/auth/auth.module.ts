@@ -5,8 +5,8 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport'; // passport module to inject it to app
 import { JwtModule } from '@nestjs/jwt'; //  it will inject JWT module to the app
 import { JwtStrategy } from './jwt.strategy'; // the strategy will be uses in the app
-import { TypeOrmModule } from '@nestjs/typeorm'; // typeORM module to inject new entity to app
-import { UserRepository } from './user.repository'; // user repository to inject it to typeorm
+import { MongooseModule } from '@nestjs/mongoose';
+import UserSchema from './user.model';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { UserRepository } from './user.repository'; // user repository to inject
         expiresIn: process.env.EXPIRE_IN,
       },
     }),
-    TypeOrmModule.forFeature([UserRepository]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
