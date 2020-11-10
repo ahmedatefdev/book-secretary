@@ -21,10 +21,10 @@ export class BooksService {
     private readonly bookModel: Model<Book>,
   ) {}
 
-  books: any[];
   async GetBooks(user: User): Promise<any[]> {
     const books = await this.bookModel.find(
       user ? {} : { type: BOOK_TYPE.PUBLIC },
+      'title description publication_date author',
     );
     return books;
   }
@@ -36,9 +36,9 @@ export class BooksService {
     return book;
   }
   async CreateBook(
-    cover: { buffer: any; mimetype: string },
     createBookDto: CreateBookDto,
     user: User,
+    cover?: { buffer: any; mimetype: string },
   ): Promise<any> {
     const {
       title,
@@ -53,8 +53,10 @@ export class BooksService {
     newBook.author = author;
     newBook.description = description;
     newBook.publication_date = publication_date;
-    newBook.cover.data = cover.buffer;
-    newBook.cover.contentType = cover.mimetype;
+    if (cover) {
+      newBook.cover.data = cover.buffer;
+      newBook.cover.contentType = cover.mimetype;
+    }
     newBook.type = type;
     newBook.user_id = user.id;
 

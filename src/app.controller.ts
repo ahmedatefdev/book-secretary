@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Redirect, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AppService } from './app.service';
 
@@ -7,7 +7,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  redirect(@Res() res: Response) {
-    return res.redirect('/books');
+  @Redirect('/books', 302)
+  index() {
+    return;
   }
 }

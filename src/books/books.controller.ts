@@ -15,6 +15,15 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { type } from 'os';
 import { GuardPrivetData } from '../auth/guard-privet-data.guard';
 import { User } from '../auth/user.model';
 import { Book } from './book.model';
@@ -23,12 +32,14 @@ import { CreateBookDto } from './dto/creat-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
 export type RequestWithUser = Request & { user: User };
+@ApiTags('books')
 @Controller('books')
 export class BooksController {
   constructor(private readonly bookServices: BooksService) {}
 
   @Get()
   @UseGuards(GuardPrivetData)
+  @ApiOkResponse({ description: 'List all books' })
   public GetBooks(@Req() { user }: RequestWithUser): Promise<Book[]> {
     return this.bookServices.GetBooks(user);
   }
@@ -42,15 +53,20 @@ export class BooksController {
     return this.bookServices.GetBookByID(id, user);
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'add book' })
+  @ApiUnauthorizedResponse()
+  // @ApiBody({ type: CreateBookDto })
+  @ApiConsumes('multipart/form-data')
   @Post()
   @UseGuards(AuthGuard())
   @UseInterceptors(FileInterceptor('cover', { limits: { fileSize: 1000 } }))
   CreateBook(
-    @UploadedFile() file,
-    @Body(ValidationPipe) createBookDTO: CreateBookDto,
+    @Body(ValidationPipe) createBookDto: CreateBookDto,
     @Req() request: RequestWithUser,
+    @UploadedFile() cover,
   ): Promise<Book> {
-    return this.bookServices.CreateBook(file, createBookDTO, request.user);
+    return this.bookServices.CreateBook(createBookDto, request.user, cover);
   }
 
   @Patch(':id')
