@@ -69,6 +69,10 @@ export class BooksController {
     return this.bookServices.CreateBook(createBookDto, request.user, cover);
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'update book' })
+  @ApiUnauthorizedResponse()
+  @ApiConsumes('multipart/form-data')
   @Patch(':id')
   @UseGuards(AuthGuard())
   UpdateBook(
@@ -78,6 +82,9 @@ export class BooksController {
     return this.bookServices.UpdateBook(id, updateBookDTO);
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Delete book' })
+  @ApiUnauthorizedResponse()
   @Delete(':id')
   @UseGuards(AuthGuard())
   DeleteBook(@Param('id') id: string): Promise<void> {
